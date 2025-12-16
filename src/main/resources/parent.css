@@ -1,0 +1,41 @@
+* {
+    -fx-primary-color: #F89406;
+    -fx-secondary-color: #2f3542;
+    -fx-checkbox-color: #57606F;
+    -fx-focus-color: #48d1cc;
+    -fx-workspace-default-text-color: #FFFFFF;
+    -fx-menu-hover-text-color: #FFFFFF;
+}
+
+.root {
+    -fx-background-color: -fx-secondary-color;
+    -fx-font-family: "Roboto Light";
+}
+
+.workspace .button {
+    -fx-wrap-text: true;
+    -fx-background-color: -fx-primary-color;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-menu-hover-text-color;
+}
+
+.workspace .button:hover {
+    -fx-background-color: linear-gradient(to right,
+    -fx-focus-color,
+    -fx-secondary-color);
+    -fx-text-fill: -fx-menu-hover-text-color;
+}
+
+.workspace .check-box {
+    -fx-background-color: radial-gradient(
+            center 50% 50%, radius 50%,
+            -fx-checkbox-color 20%,
+            -fx-secondary-color 100%
+    );
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-workspace-default-text-color;
+}
+
+.workspace .label {
+    -fx-text-fill: -fx-workspace-default-text-color;
+}

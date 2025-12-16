@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="235.0" prefWidth="160.0" styleClass="workspace" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mj8lnir.audiotageditor.TagEditorController">
+   <children>
+      <Button layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#chooseFiles" prefHeight="30.0" prefWidth="130.0" text="choose files" />
+      <Button layoutX="15.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#start" prefHeight="30.0" prefWidth="130.0" text="start" />
+      <TextField fx:id="albumNameTextField" layoutX="15.0" layoutY="85.0" prefHeight="30.0" prefWidth="130.0" promptText="Music" />
+      <Label fx:id="label" layoutX="15.0" layoutY="190.0" prefHeight="30.0" prefWidth="130.0" textAlignment="CENTER" />
+      <CheckBox fx:id="playlistCheckbox" layoutX="15.0" layoutY="120.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="130.0" text="create playlist" />
+      <TextField fx:id="playlistNameTextField" layoutX="15.0" layoutY="155.0" prefHeight="30.0" prefWidth="130.0" promptText="Playlist name" />
+   </children>
+</AnchorPane>
