@@ -42,7 +42,7 @@ internal class AudioTagService {
     }
 
     fun extractArtistName(file: File): String {
-        val fileName = file.nameWithoutExtension
+        val fileName = prepareFilename(file.nameWithoutExtension)
         return if (fileName.contains(DELIMITER)) {
             fileName
                 .substringBefore(DELIMITER)
@@ -54,7 +54,7 @@ internal class AudioTagService {
     }
 
     fun extractTitle(file: File): String {
-        val fileName = file.nameWithoutExtension
+        val fileName = prepareFilename(file.nameWithoutExtension)
         return if (fileName.contains(DELIMITER)) {
             fileName.substringAfter(DELIMITER)
                 .trim()
@@ -62,5 +62,16 @@ internal class AudioTagService {
         } else {
             ""
         }
+    }
+
+    fun prepareFilename(filename: String): String {
+        return filename
+            .replace("Ё", "е", ignoreCase = true)
+            .replace(Regex("-{2,}"), "-")
+            .replace(Regex("\\s{2,}"), " ")
+            .replace(Regex("\\(\\d+\\)"), "")
+            .replace("-mp3", "")
+            .replace("_", " ")
+            .trim();
     }
 }
