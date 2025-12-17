@@ -48,25 +48,23 @@ javafx {
 tasks.register<Exec>("jpackageExe") {
     dependsOn(tasks.named("bootJar"))
 
-    val jarTask = tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar").get()
-    val jarName = jarTask.archiveFileName.get()
-    val jarDir = jarTask.destinationDirectory.get().asFile
-    val jarPath = jarDir.resolve(jarName).absolutePath
-    val outputDir = layout.buildDirectory.dir("jpackage").get().asFile
-
     doFirst {
-        outputDir.mkdirs()
-    }
+        val jarTask = tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar").get()
+        val jarName = jarTask.archiveFileName.get()
+        val jarDir = jarTask.destinationDirectory.get().asFile
+        val outputDir = layout.buildDirectory.dir("jpackage").get().asFile
 
-    commandLine(
-        "jpackage",
-        "--name", "AudioTagEditor",
-        "--input", jarDir.absolutePath,
-        "--main-jar", jarName,
-        "--main-class", "com.mj8lnir.audiotageditor.AudioTagEditorApplicationKt",
-        "--type", "exe",
-        "--dest", outputDir.absolutePath,
-        "--win-console"
-    )
+        outputDir.mkdirs()
+
+        commandLine(
+            "jpackage",
+            "--name", "AudioTagEditor",
+            "--input", jarDir.absolutePath,
+            "--main-jar", jarName,
+            "--main-class", "org.springframework.boot.loader.launch.JarLauncher",
+            "--type", "exe",
+            "--dest", outputDir.absolutePath
+        )
+    }
 }
 

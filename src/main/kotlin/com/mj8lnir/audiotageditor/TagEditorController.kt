@@ -54,11 +54,15 @@ internal class TagEditorController(
     }
 
     fun start() {
-        val albumName = albumNameTextField.text.trim()
-        val playlistName = playlistNameTextField.text.trim()
-        val createPlaylist = playlistCheckbox.isSelected
-        val successCount = service.editTags(FileBuffer.getFiles(), albumName, createPlaylist, playlistName)
-        label.text = "completed: $successCount/${FileBuffer.getFiles().size}"
+        if (FileBuffer.isEmpty()) {
+            label.text = "Choose .mp3 first"
+        } else {
+            val albumName = albumNameTextField.text.trim()
+            val playlistName = playlistNameTextField.text.trim()
+            val createPlaylist = playlistCheckbox.isSelected
+            val successCount = service.editTags(FileBuffer.getFiles(), albumName, createPlaylist, playlistName)
+            label.text = "completed: $successCount/${FileBuffer.getFiles().size}"
+        }
     }
 
     fun chooseFiles(mouseEvent: MouseEvent) {
