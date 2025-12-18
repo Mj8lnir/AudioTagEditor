@@ -42,7 +42,7 @@ internal class StageInitializer(
             stage.y = event.screenY - yOffset
         }
         stage.icons.add(Image(iconFile.url.toExternalForm()))
-        val scene = Scene(parent, 160.0, 225.0).apply {
+        val scene = Scene(parent, 180.0, 225.0).apply {
             this.stylesheets.add(styleFile.url.toExternalForm())
         }
         scene.fill = Color.TRANSPARENT

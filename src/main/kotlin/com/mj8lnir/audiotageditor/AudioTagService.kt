@@ -9,23 +9,13 @@ import java.io.File
 @Service
 internal class AudioTagService {
 
-    private companion object {
-        const val DELIMITER = " - "
-        const val DEFAULT_ALBUM_NAME = "Music"
-        const val DEFAULT_PLAYLIST_NAME = "Music"
+    companion object {
+        private const val DELIMITER = " - "
+        private const val DEFAULT_ALBUM_NAME = "Music"
     }
 
-    fun editTags(
-        files: Set<File>,
-        albumName: String,
-        createPlaylist: Boolean,
-        playlistName: String,
-    ): Int {
-        val successCount = files.count { file ->
-            processAudioFile(AudioFileIO.read(file), albumName)
-        }
-        return successCount
-    }
+    fun editTags(files: Set<File>, albumName: String): Int = files
+        .count { file -> processAudioFile(AudioFileIO.read(file), albumName) }
 
     private fun processAudioFile(audioFile: AudioFile, albumName: String): Boolean {
         val artistName = extractArtistName(audioFile.file)
@@ -41,7 +31,7 @@ internal class AudioTagService {
         return false
     }
 
-    fun extractArtistName(file: File): String {
+    private fun extractArtistName(file: File): String {
         val fileName = prepareFilename(file)
         return if (fileName.contains(DELIMITER)) {
             fileName
@@ -52,7 +42,7 @@ internal class AudioTagService {
         }
     }
 
-    fun extractTitle(file: File): String {
+    private fun extractTitle(file: File): String {
         val fileName = prepareFilename(file)
         return if (fileName.contains(DELIMITER)) {
             fileName.substringAfter(DELIMITER)
@@ -62,9 +52,10 @@ internal class AudioTagService {
         }
     }
 
-    fun prepareFilename(file: File): String {
+    private fun prepareFilename(file: File): String {
         return file.nameWithoutExtension
             .replace("Ё", "е", ignoreCase = true)
+            .replace(Regex("[;?/:*<>|\\\\]"), "")
             .replace(Regex("-{2,}"), "-")
             .replace(Regex("\\s{2,}"), " ")
             .replace(Regex("\\(\\d+\\)"), "")
