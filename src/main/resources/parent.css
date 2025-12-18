@@ -10,6 +10,17 @@
 .root {
     -fx-background-color: -fx-secondary-color;
     -fx-font-family: "Roboto Light";
+    -fx-font-weight: bold;
+}
+
+#closeLabel {
+    -fx-text-fill: -fx-workspace-default-text-color;
+    -fx-font-weight: bold;
+}
+
+#closeLabel:hover {
+    -fx-text-fill: -fx-primary-color;
+    -fx-font-weight: bold;
 }
 
 .workspace .button {
@@ -38,4 +49,71 @@
 
 .workspace .label {
     -fx-text-fill: -fx-workspace-default-text-color;
+    -fx-font-family: "Roboto Light";
+}
+
+.tab-pane {
+    -fx-tab-min-width: 80;
+    -fx-tab-max-width: 80;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: -fx-secondary-color;
+    -fx-border-color: -fx-secondary-color;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: -fx-primary-color;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: -fx-menu-hover-text-color;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: -fx-menu-hover-text-color;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: -fx-secondary-color;
+    -fx-text-fill: -fx-menu-hover-text-color;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab-pane > .tab-header-area > .tab:selected > .tab-label {
+    -fx-border-color: -fx-primary-color;
+    -fx-background-color: -fx-primary-color;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-border-color: -fx-primary-color;
+    -fx-background-color: -fx-primary-color;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-border-color: -fx-primary-color;
+}
+
+.tab-pane > .tab-content-area {
+    -fx-border-color: -fx-primary-color transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
 }

@@ -6,6 +6,7 @@ import javafx.scene.Scene
 import javafx.scene.image.Image
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
+import javafx.stage.StageStyle
 import javafx.util.Callback
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
@@ -17,13 +18,13 @@ import org.springframework.stereotype.Component
 internal class StageInitializer(
     @Value("classpath:parent.fxml") private val fxmlFile: Resource,
     @Value("classpath:parent.css") private val styleFile: Resource,
-    @Value("classpath:icon.png") private val iconFile: Resource,
+    @Value("classpath:garmin.png") private val iconFile: Resource,
     private val context: ApplicationContext,
 ) : ApplicationListener<StageReadyEvent> {
 
-    private companion object {
-        var xOffset = 0.0
-        var yOffset = 0.0
+    companion object {
+        private var xOffset = 0.0
+        private var yOffset = 0.0
     }
 
     override fun onApplicationEvent(event: StageReadyEvent) {
@@ -32,17 +33,17 @@ internal class StageInitializer(
         }
         val parent = fxmlLoader.load<Parent>()
         val stage = event.getStage()
+        stage.initStyle(StageStyle.UNDECORATED)
         parent.setOnMousePressed { event: MouseEvent ->
             xOffset = event.sceneX
             yOffset = event.sceneY
         }
-
         parent.setOnMouseDragged { event: MouseEvent ->
             stage.x = event.screenX - xOffset
             stage.y = event.screenY - yOffset
         }
         stage.icons.add(Image(iconFile.url.toExternalForm()))
-        val scene = Scene(parent, 160.0, 225.0).apply {
+        val scene = Scene(parent, 180.0, 225.0).apply {
             this.stylesheets.add(styleFile.url.toExternalForm())
         }
         scene.fill = Color.TRANSPARENT

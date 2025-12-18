@@ -1,7 +1,6 @@
 package com.mj8lnir.audiotageditor
 
 import javafx.application.Application
-import javafx.application.Platform
 import javafx.stage.Stage
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ApplicationEvent
@@ -14,11 +13,6 @@ internal class UiApplication : Application() {
 
     override fun start(stage: Stage) {
         context.publishEvent(StageReadyEvent(stage))
-    }
-
-    override fun stop() {
-        context.close()
-        Platform.exit()
     }
 }
 

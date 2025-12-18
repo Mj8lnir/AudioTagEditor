@@ -1,16 +1,18 @@
 package com.mj8lnir.audiotageditor
 
+import org.springframework.stereotype.Component
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
-object FileBuffer {
+@Component
+internal class FileBuffer {
 
-    private val filesBuffer = ConcurrentHashMap.newKeySet<File>()
+    companion object {
+        private val filesBuffer = ConcurrentHashMap.newKeySet<File>()
+    }
 
-    fun getFiles(): Set<File> {
-        return mutableSetOf<File>().apply {
-            addAll(filesBuffer)
-        }
+    fun getFiles(): Set<File> = mutableSetOf<File>().apply {
+        addAll(filesBuffer)
     }
 
     fun getSize(): Int = filesBuffer.size
@@ -23,11 +25,6 @@ object FileBuffer {
         filesBuffer.addAll(files)
     }
 
-    fun isNotEmpty(): Boolean {
-        return filesBuffer.isNotEmpty()
-    }
+    fun isEmpty(): Boolean = filesBuffer.isEmpty()
 
-    fun isEmpty(): Boolean {
-        return filesBuffer.isEmpty()
-    }
 }

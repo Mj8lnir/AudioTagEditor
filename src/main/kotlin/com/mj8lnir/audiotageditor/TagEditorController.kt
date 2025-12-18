@@ -1,27 +1,35 @@
 package com.mj8lnir.audiotageditor
 
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.Node
 import javafx.scene.Scene
-import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.input.InputEvent
 import javafx.scene.input.MouseEvent
 import javafx.stage.FileChooser
 import javafx.stage.Stage
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.Resource
 import org.springframework.stereotype.Controller
 import java.net.URL
 import java.util.*
+import kotlin.system.exitProcess
 
 @Controller
 internal class TagEditorController(
     private val service: AudioTagService,
+    private val playlistService: GarminPlaylistService,
+    private val fileBuffer: FileBuffer,
+    @Value("classpath:garmin.png") private val garminIcon: Resource,
 ) : Initializable {
 
     @FXML
-    private lateinit var playlistCheckbox: CheckBox
+    private lateinit var appLogo: ImageView
 
     @FXML
     private lateinit var albumNameTextField: TextField
@@ -32,54 +40,69 @@ internal class TagEditorController(
     @FXML
     private lateinit var label: Label
 
-    private companion object {
-        const val LABEL_PROMPT_TEXT = "Select .mp3 to start"
-        const val FILES_NOT_CHOSEN_TEXT = "Files not chosen"
-        val fileChooser: FileChooser = FileChooser()
+    companion object {
+        private const val LABEL_PROMPT_TEXT = "Select .mp3 to start"
+        private const val FILES_NOT_CHOSEN_TEXT = "Files not chosen"
+        private val fileChooser: FileChooser = FileChooser()
     }
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
+        appLogo.image = Image(garminIcon.url.toExternalForm())
         label.text = LABEL_PROMPT_TEXT
-        playlistNameTextField.isDisable = true
-        playlistCheckbox.selectedProperty().addListener { _, _, isSelected ->
-            playlistNameTextField.isDisable = !isSelected
-        }
         fileChooser.title = "Choose files"
         if (fileChooser.extensionFilters.isEmpty()) {
             fileChooser.extensionFilters.addAll(
                 FileChooser.ExtensionFilter("Music (*.mp3)", "*.mp3"),
-                FileChooser.ExtensionFilter("All files", "*")
             )
         }
     }
 
-    fun start() {
-        if (FileBuffer.isEmpty()) {
-            label.text = "Choose .mp3 first"
-        } else {
-            val albumName = albumNameTextField.text.trim()
-            val playlistName = playlistNameTextField.text.trim()
-            val createPlaylist = playlistCheckbox.isSelected
-            val successCount = service.editTags(FileBuffer.getFiles(), albumName, createPlaylist, playlistName)
-            label.text = "completed: $successCount/${FileBuffer.getFiles().size}"
+    fun startTags() {
+        if (fileBuffer.isEmpty()) {
+            label.text = FILES_NOT_CHOSEN_TEXT
+            return
         }
+        val albumName = albumNameTextField.text.trim().ifBlank {
+            label.text = "specify album name!"
+            return
+        }
+        val successCount = service.editTags(fileBuffer.getFiles(), albumName)
+        label.text = "completed: $successCount/${fileBuffer.getSize()}"
+    }
+
+    fun startPlaylists() {
+        if (fileBuffer.isEmpty()) {
+            label.text = FILES_NOT_CHOSEN_TEXT
+            return
+        }
+        val playlistName = playlistNameTextField.text.trim().ifBlank {
+            label.text = "specify playlist name!"
+            return
+        }
+        val playlistCreated = playlistService.createPlaylist(fileBuffer.getFiles(), playlistName)
+        label.text = "playlist '$playlistName' ${if (playlistCreated) "created" else "not created"}"
     }
 
     fun chooseFiles(mouseEvent: MouseEvent) {
         val scene = getScene(mouseEvent)
         val stage = scene.window as Stage
         label.text = LABEL_PROMPT_TEXT
-        FileBuffer.clearBuffer()
+        fileBuffer.clearBuffer()
         try {
-            FileBuffer.addFiles(fileChooser.showOpenMultipleDialog(stage))
-            if (FileBuffer.isEmpty()) {
+            fileBuffer.addFiles(fileChooser.showOpenMultipleDialog(stage))
+            if (fileBuffer.isEmpty()) {
                 label.text = FILES_NOT_CHOSEN_TEXT
             } else {
-                label.text = "Selected ${FileBuffer.getSize()} songs"
+                label.text = "Selected ${fileBuffer.getSize()} songs"
             }
         } catch (_: Exception) {
             label.text = FILES_NOT_CHOSEN_TEXT
         }
+    }
+
+    fun stop() {
+        Platform.exit()
+        exitProcess(0)
     }
 
     private fun getScene(inputEvent: InputEvent): Scene {
