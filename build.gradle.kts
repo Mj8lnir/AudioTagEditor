@@ -7,13 +7,21 @@ plugins {
 }
 
 group = "com.mj8lnir"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0.0"
 description = "audio-tag-editor"
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+springBoot {
+    mainClass.set("com.mj8lnir.audiotageditor.AudioTagEditorApplicationKt")
+}
+
+tasks.bootJar {
+    archiveClassifier.set("")
 }
 
 repositories {
@@ -41,30 +49,40 @@ tasks.withType<Test> {
 }
 
 javafx {
-    version = "17"
+    version = "21"
     modules("javafx.controls", "javafx.fxml")
 }
 
 tasks.register<Exec>("jpackageExe") {
-    dependsOn(tasks.named("bootJar"))
+    dependsOn("bootJar")
 
-    doFirst {
-        val jarTask = tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar").get()
-        val jarName = jarTask.archiveFileName.get()
-        val jarDir = jarTask.destinationDirectory.get().asFile
-        val outputDir = layout.buildDirectory.dir("jpackage").get().asFile
+    commandLine(
+        "jpackage",
+        "--type", "msi",
+        "--name", "AudioTagEditor",
+        "--app-version", project.version.toString(),
+        "--vendor", "Nikolay Yabrov",
+        "--input", "build/libs",
+        "--main-jar", "${project.name}-${project.version}.jar",
+        "--main-class", "org.springframework.boot.loader.launch.JarLauncher",
+        "--dest", "build/installer",
+        "--icon", "src/main/resources/bug.ico",
+        "--description", "Audio .mp3 tags editor and garmin playlist manager",
+        "--verbose",
+        "--win-menu",
+        "--win-shortcut",
+        // JVM options
+        "--java-options", "-Xmx512m",
+        "--java-options", "-XX:NewRatio=4",
+        "--java-options", "-XX:MaxHeapFreeRatio=10",
+        "--java-options", "-XX:MinHeapFreeRatio=10",
+        "--java-options", "-XX:ParallelGCThreads=4",
+        "--java-options", "-XX:+UseStringDeduplication",
+    )
 
-        outputDir.mkdirs()
-
-        commandLine(
-            "jpackage",
-            "--name", "AudioTagEditor",
-            "--input", jarDir.absolutePath,
-            "--main-jar", jarName,
-            "--main-class", "org.springframework.boot.loader.launch.JarLauncher",
-            "--type", "exe",
-            "--dest", outputDir.absolutePath
-        )
-    }
+    isIgnoreExitValue = true
 }
+
+
+
 
