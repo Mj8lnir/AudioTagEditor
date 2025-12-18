@@ -1,29 +1,35 @@
 package com.mj8lnir.audiotageditor
 
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.Node
 import javafx.scene.Scene
-import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import javafx.scene.control.TextField
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.input.InputEvent
 import javafx.scene.input.MouseEvent
 import javafx.stage.FileChooser
 import javafx.stage.Stage
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.Resource
 import org.springframework.stereotype.Controller
 import java.net.URL
 import java.util.*
+import kotlin.system.exitProcess
 
 @Controller
 internal class TagEditorController(
     private val service: AudioTagService,
     private val playlistService: GarminPlaylistService,
     private val fileBuffer: FileBuffer,
+    @Value("classpath:garmin.png") private val garminIcon: Resource,
 ) : Initializable {
 
     @FXML
-    private lateinit var playlistCheckbox: CheckBox
+    private lateinit var appLogo: ImageView
 
     @FXML
     private lateinit var albumNameTextField: TextField
@@ -41,11 +47,8 @@ internal class TagEditorController(
     }
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
+        appLogo.image = Image(garminIcon.url.toExternalForm())
         label.text = LABEL_PROMPT_TEXT
-        playlistNameTextField.isDisable = true
-        playlistCheckbox.selectedProperty().addListener { _, _, isSelected ->
-            playlistNameTextField.isDisable = !isSelected
-        }
         fileChooser.title = "Choose files"
         if (fileChooser.extensionFilters.isEmpty()) {
             fileChooser.extensionFilters.addAll(
@@ -54,16 +57,30 @@ internal class TagEditorController(
         }
     }
 
-    fun start() {
+    fun startTags() {
         if (fileBuffer.isEmpty()) {
             label.text = FILES_NOT_CHOSEN_TEXT
             return
         }
-        if (playlistCheckbox.isSelected) {
-            createPlaylist()
-        } else {
-            editTags()
+        val albumName = albumNameTextField.text.trim().ifBlank {
+            label.text = "specify album name!"
+            return
         }
+        val successCount = service.editTags(fileBuffer.getFiles(), albumName)
+        label.text = "completed: $successCount/${fileBuffer.getSize()}"
+    }
+
+    fun startPlaylists() {
+        if (fileBuffer.isEmpty()) {
+            label.text = FILES_NOT_CHOSEN_TEXT
+            return
+        }
+        val playlistName = playlistNameTextField.text.trim().ifBlank {
+            label.text = "specify playlist name!"
+            return
+        }
+        val playlistCreated = playlistService.createPlaylist(fileBuffer.getFiles(), playlistName)
+        label.text = "playlist '$playlistName' ${if (playlistCreated) "created" else "not created"}"
     }
 
     fun chooseFiles(mouseEvent: MouseEvent) {
@@ -83,19 +100,9 @@ internal class TagEditorController(
         }
     }
 
-    private fun editTags() {
-        val albumName = albumNameTextField.text.trim()
-        val successCount = service.editTags(fileBuffer.getFiles(), albumName)
-        label.text = "completed: $successCount/${fileBuffer.getSize()}"
-    }
-
-    private fun createPlaylist() {
-        val playlistName = playlistNameTextField.text.trim().ifBlank {
-            label.text = "specify playlist name!"
-            return
-        }
-        val playlistCreated = playlistService.createPlaylist(fileBuffer.getFiles(), playlistName)
-        label.text = "playlist '$playlistName' ${if (playlistCreated) "created" else "not created"}"
+    fun stop() {
+        Platform.exit()
+        exitProcess(0)
     }
 
     private fun getScene(inputEvent: InputEvent): Scene {

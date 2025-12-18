@@ -1,17 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="235.0" prefWidth="180.0" styleClass="workspace" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mj8lnir.audiotageditor.TagEditorController">
+<AnchorPane prefHeight="225.0" prefWidth="180.0" styleClass="workspace" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mj8lnir.audiotageditor.TagEditorController">
    <children>
-      <Button layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#chooseFiles" prefHeight="30.0" prefWidth="150.0" text="choose files" />
-      <Button layoutX="15.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#start" prefHeight="30.0" prefWidth="150.0" text="start" />
-      <TextField fx:id="albumNameTextField" layoutX="15.0" layoutY="85.0" prefHeight="30.0" prefWidth="150.0" promptText="Music" />
-      <Label fx:id="label" layoutX="15.0" layoutY="190.0" prefHeight="30.0" prefWidth="150.0" textAlignment="CENTER" alignment="BASELINE_CENTER"/>
-      <CheckBox fx:id="playlistCheckbox" layoutX="15.0" layoutY="120.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="create garmin playlist" />
-      <TextField fx:id="playlistNameTextField" layoutX="15.0" layoutY="155.0" prefHeight="30.0" prefWidth="150.0" promptText="Playlist name" />
+      <VBox prefHeight="225.0" prefWidth="180.0">
+         <children>
+            <Pane prefHeight="30.0" prefWidth="180.0">
+               <children>
+                  <Label alignment="BOTTOM_CENTER" layoutX="40.0" layoutY="2.0" prefHeight="22.0" prefWidth="90.0" text="Tags Editor" />
+                  <Label id="closeLabel" alignment="BASELINE_CENTER" layoutX="130.0" layoutY="1.0" onMouseClicked="#stop" prefHeight="30.0" prefWidth="50.0" text="X" />
+                  <ImageView fx:id="appLogo" fitHeight="22.0" fitWidth="22.0" layoutX="8.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </Pane>
+            <TabPane prefHeight="165.0" prefWidth="180.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Tags">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Button layoutX="15.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#chooseFiles" prefHeight="30.0" prefWidth="150.0" text="choose files" />
+                              <Button layoutX="15.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#startTags" prefHeight="30.0" prefWidth="150.0" text="start" />
+                              <TextField fx:id="albumNameTextField" layoutX="15.0" layoutY="90.0" prefHeight="30.0" prefWidth="150.0" promptText="Album name" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="Playlists">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Button layoutX="15.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#chooseFiles" prefHeight="30.0" prefWidth="150.0" text="choose files" />
+                              <Button layoutX="15.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#startPlaylists" prefHeight="30.0" prefWidth="150.0" text="start" />
+                              <TextField fx:id="playlistNameTextField" layoutX="15.0" layoutY="90.0" prefHeight="30.0" prefWidth="150.0" promptText="Playlist name" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+            <Pane prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="label" alignment="TOP_CENTER" prefHeight="30.0" prefWidth="180.0" textAlignment="CENTER" />
+               </children>
+            </Pane>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
