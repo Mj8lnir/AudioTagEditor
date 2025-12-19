@@ -1,7 +1,5 @@
 package com.mj8lnir.audiotageditor
 
-import javafx.application.Application
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.Node
@@ -15,7 +13,6 @@ import javafx.scene.input.MouseEvent
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Controller
 import java.net.URL
@@ -62,27 +59,29 @@ internal class TagEditorController(
     fun startTags() {
         if (fileBuffer.isEmpty()) {
             label.text = FILES_NOT_CHOSEN_TEXT
+            fileBuffer.clearBuffer()
             return
         }
-        val albumName = albumNameTextField.text.trim().ifBlank {
-            label.text = "specify album name!"
-            return
-        }
+        val albumName = albumNameTextField.text.trim()
         val successCount = service.editTags(fileBuffer.getFiles(), albumName)
         label.text = "completed: $successCount/${fileBuffer.getSize()}"
+        fileBuffer.clearBuffer()
     }
 
     fun startPlaylists() {
         if (fileBuffer.isEmpty()) {
             label.text = FILES_NOT_CHOSEN_TEXT
+            fileBuffer.clearBuffer()
             return
         }
         val playlistName = playlistNameTextField.text.trim().ifBlank {
             label.text = "specify playlist name!"
+            fileBuffer.clearBuffer()
             return
         }
         val playlistCreated = playlistService.createPlaylist(fileBuffer.getFiles(), playlistName)
         label.text = "playlist '$playlistName' ${if (playlistCreated) "created" else "not created"}"
+        fileBuffer.clearBuffer()
     }
 
     fun chooseFiles(mouseEvent: MouseEvent) {
