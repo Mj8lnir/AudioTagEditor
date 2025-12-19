@@ -2,6 +2,7 @@ package com.mj8lnir.audiotageditor
 
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
+import org.jaudiotagger.tag.FieldDataInvalidException
 import org.jaudiotagger.tag.FieldKey
 import org.springframework.stereotype.Service
 import java.io.File
@@ -21,12 +22,20 @@ internal class AudioTagService {
         val artistName = extractArtistName(audioFile.file)
         val title = extractTitle(audioFile.file)
         if (title.isNotBlank() && artistName.isNotBlank()) {
-            val tag = audioFile.tagOrCreateAndSetDefault
-            tag.setField(FieldKey.ALBUM, albumName.ifBlank { DEFAULT_ALBUM_NAME })
-            tag.setField(FieldKey.ARTIST, artistName)
-            tag.setField(FieldKey.TITLE, title)
-            AudioFileIO.write(audioFile)
-            return true
+            try {
+                val tag = audioFile.tagOrCreateAndSetDefault
+                if (albumName.isNotBlank()) {
+                    tag.setField(FieldKey.ALBUM, albumName)
+                } else if (tag.getFirst(FieldKey.ALBUM)?.isBlank() ?: true) {
+                    tag.setField(FieldKey.ALBUM, DEFAULT_ALBUM_NAME)
+                }
+                tag.setField(FieldKey.ARTIST, artistName)
+                tag.setField(FieldKey.TITLE, title)
+                AudioFileIO.write(audioFile)
+                return true
+            } catch (_: FieldDataInvalidException) {
+                return false
+            }
         }
         return false
     }

@@ -1,5 +1,6 @@
 package com.mj8lnir.audiotageditor
 
+import javafx.application.Application
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
@@ -14,18 +15,19 @@ import javafx.scene.input.MouseEvent
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Controller
 import java.net.URL
 import java.util.*
-import kotlin.system.exitProcess
 
 @Controller
 internal class TagEditorController(
     private val service: AudioTagService,
     private val playlistService: GarminPlaylistService,
     private val fileBuffer: FileBuffer,
-    @Value("classpath:garmin.png") private val garminIcon: Resource,
+    @Value("classpath:garmin.png")
+    private val garminIcon: Resource,
 ) : Initializable {
 
     @FXML
@@ -100,9 +102,10 @@ internal class TagEditorController(
         }
     }
 
-    fun stop() {
-        Platform.exit()
-        exitProcess(0)
+    fun stop(mouseEvent: MouseEvent) {
+        val scene = getScene(mouseEvent)
+        val stage = scene.window as Stage
+        stage.close()
     }
 
     private fun getScene(inputEvent: InputEvent): Scene {

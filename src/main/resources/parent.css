@@ -31,10 +31,12 @@
 }
 
 .workspace .button:hover {
-    -fx-background-color: linear-gradient(to right,
-    -fx-focus-color,
-    -fx-secondary-color);
     -fx-text-fill: -fx-menu-hover-text-color;
+    -fx-background-color: radial-gradient(
+            center 50% 50%, radius 50%,
+            -fx-focus-color 20%,
+            -fx-secondary-color 100%
+    );
 }
 
 .workspace .check-box {
