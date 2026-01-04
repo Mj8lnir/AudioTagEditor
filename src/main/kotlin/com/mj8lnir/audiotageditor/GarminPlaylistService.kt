@@ -24,7 +24,7 @@ internal class GarminPlaylistService {
             }
             FileWriter(playlistFile, StandardCharsets.UTF_8).use { writer ->
                 files.forEach { file ->
-                    writer.write("$GARMIN_MUSIC_PREFIX/${file.parentFile.name}/${file.name}".uppercase())
+                    writer.write("$GARMIN_MUSIC_PREFIX/${file.parentFile.name}/".uppercase() + file.name)
                     writer.write(System.lineSeparator())
                 }
                 writer.flush()
